@@ -1,5 +1,6 @@
 const express = require('express')
 var MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId
 const cors = require('cors')
 require('dotenv').config()
 const app = express()
@@ -25,17 +26,33 @@ async function run() {
     try {
       await client.connect();
       const database = client.db("CarsHouse");
-      const homeCollection = database.collection("Home_Page_Image");
+    //   const homeCollection = database.collection("Home_Page_Image");
+      const carsCollection = database.collection("Cars");
       
 
-    //   home page image api
-    app.get('/home', async(req,res) =>{
-        const cursor = homeCollection.find({})
+    // //   home page image api
+    // app.get('/home', async(req,res) =>{
+    //     const cursor = homeCollection.find({})
+    //     const result = await cursor.toArray()
+    //     res.send(result)
+    //     console.log(result)
+    // })
+    
+    // cars api
+    app.get('/cars', async(req,res) =>{
+        const cursor = carsCollection.find({})
         const result = await cursor.toArray()
         res.send(result)
         console.log(result)
     })
 
+    // // find one
+    app.get('/cars/:id', async(req,res) =>{
+        const id = req.params.id
+        const query = {_id: ObjectId(id)}
+        const result = await carsCollection.findOne(query)
+        res.send(result);
+    })
 
 
 
