@@ -30,6 +30,8 @@ async function run() {
       const carsCollection = database.collection("Cars");
       const placeOrderCollection = database.collection("place_Order_information")
       const reviewCollection = database.collection("Review_Collection")
+      const userCollection = database.collection("Users")
+      const addedProductCollection = database.collection("add_product")
       
 
     // //   home page image api
@@ -78,7 +80,7 @@ async function run() {
     })
      
     // delete placeORder Information
-      app.delete('/placeorder/:id', async(req,res) =>{
+      app.delete('placeorder/:id', async(req,res) =>{
         const id = req.params.id;
         console.log('deletedid', id)
         res.json('going to delete')
@@ -100,6 +102,51 @@ async function run() {
       })
 
 
+
+      // users
+      app.post('/users', async(req,res) =>{
+        const user = req.body
+        const result = await userCollection.insertOne(user)
+        console.log(req.body)
+        console.log(result)
+        res.json(result);
+      })
+
+
+      // admin
+      app.put('/users/admin', async(req,res) =>{
+        const user = req.body;
+        const filter = {email: user.email}
+
+        const updateDoc = {$set: {role:'admin'}};
+        const result = await userCollection.updateOne(filter,updateDoc);
+        res.json(result);
+    })
+
+
+    // 
+    app.get('/users/:email', async(req,res) =>{
+      const email = req.params.email;
+      const query = {email: email}
+      const user = await userCollection.findOne(query);
+     let isAdmin = (false)
+      if(user?.role === 'admin'){
+          isAdmin = true;
+      }
+      res.json({admin: isAdmin})
+  })
+
+
+  // added product
+  app.post('/cars', async(req,res) =>{
+    const product = req.body;
+    const  result = await carsCollection.insertOne(product)
+    console.log(result)
+    console.log(req.body)
+    res.json(result)
+  })
+
+  // product get
 
 
 
