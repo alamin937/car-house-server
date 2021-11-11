@@ -28,6 +28,8 @@ async function run() {
       const database = client.db("CarsHouse");
     //   const homeCollection = database.collection("Home_Page_Image");
       const carsCollection = database.collection("Cars");
+      const placeOrderCollection = database.collection("place_Order_information")
+      const reviewCollection = database.collection("Review_Collection")
       
 
     // //   home page image api
@@ -53,6 +55,53 @@ async function run() {
         const result = await carsCollection.findOne(query)
         res.send(result);
     })
+
+
+    // place order information
+
+    app.post('/placeorder', async(req,res) =>{
+      const placeorder = req.body
+      const result = await placeOrderCollection.insertOne(placeorder)
+      console.log(req.body)
+      console.log(result)
+      res.json(result);
+    })
+
+
+    // get place order
+    app.get('/placeorder', async(req,res) =>{
+      const email = req.query.email;
+      const query = {email: email}
+      const cursor = placeOrderCollection.find(query)
+      const result = await cursor.toArray()
+      res.send(result);
+    })
+     
+    // delete placeORder Information
+      app.delete('/placeorder/:id', async(req,res) =>{
+        const id = req.params.id;
+        console.log('deletedid', id)
+        res.json('going to delete')
+      })
+
+      // review api
+      app.post('/review', async(req,res) =>{
+        const review = req.body
+        const result = await reviewCollection.insertOne(review)
+        res.json(result)
+      })
+
+      // get review
+      app.get('/review', async(req,res) =>{
+        const cursor = reviewCollection.find({})
+        const result = await cursor.toArray()
+        res.send(result)
+        console.log(result)
+      })
+
+
+
+
 
 
 
