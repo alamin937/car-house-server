@@ -46,6 +46,14 @@ async function run() {
         res.send(result)
         console.log(result)
     })
+    // cars delete
+    app.delete('/cars/:id', async(req,res) =>{
+      const id = req.params.id;
+      console.log('delet',id)
+      const query = {_id: ObjectId(id)}
+      const result = await carsCollection.deleteOne(query)
+      res.json(result)
+    })
 
     // // find one
     app.get('/cars/:id', async(req,res) =>{
@@ -66,16 +74,17 @@ async function run() {
       res.json(result);
     })
 
-    app.get('/placeorder', async(req,res) =>{
+    app.get('/placeorder/all', async(req,res) =>{
         const cursor = placeOrderCollection.find({ })
         const result = await cursor.toArray()
         res.send(result)
     })
 
+     
 
     // get place order
-    app.get('/placeorder', async(req,res) =>{
-      const email = req.query.email;
+    app.get('/placeorder/:email', async(req,res) =>{
+      const email = req.params.email;
       const query = {email: email}
       const cursor = placeOrderCollection.find(query)
       const result = await cursor.toArray()
