@@ -15,9 +15,6 @@ const port = process.env.PORT || 5000
 
 
 
-
-
-
 var uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0-shard-00-00.bzphb.mongodb.net:27017,cluster0-shard-00-01.bzphb.mongodb.net:27017,cluster0-shard-00-02.bzphb.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-rs3vfq-shard-0&authSource=admin&retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -69,6 +66,12 @@ async function run() {
       res.json(result);
     })
 
+    app.get('/placeorder', async(req,res) =>{
+        const cursor = placeOrderCollection.find({ })
+        const result = await cursor.toArray()
+        res.send(result)
+    })
+
 
     // get place order
     app.get('/placeorder', async(req,res) =>{
@@ -80,10 +83,11 @@ async function run() {
     })
      
     // delete placeORder Information
-      app.delete('placeorder/:id', async(req,res) =>{
-        const id = req.params.id;
-        console.log('deletedid', id)
-        res.json('going to delete')
+      app.delete('/placeorder/:id', async(req,res) =>{
+          const id = req.params.id;
+          const query = {_id: ObjectId(id)}
+          const result = await placeOrderCollection.deleteOne(query)
+          res.json(result)
       })
 
       // review api
