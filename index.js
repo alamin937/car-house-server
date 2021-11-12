@@ -74,7 +74,7 @@ async function run() {
       res.json(result);
     })
 
-    app.get('/placeorder/all', async(req,res) =>{
+    app.get('/placeorder', async(req,res) =>{
         const cursor = placeOrderCollection.find({ })
         const result = await cursor.toArray()
         res.send(result)
